@@ -1,0 +1,48 @@
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Cargar el modelo
+model = tf.keras.models.load_model('mi_modelo_cifar10.h5')
+
+# Definir las clases
+class_names = ['avión', 'automóvil', 'pájaro', 'gato', 'ciervo',
+               'perro', 'rana', 'caballo', 'barco', 'camión']
+
+# Función para preprocesar la imagen
+def preprocess_image(image):
+    image = tf.image.resize(image, (32, 32))
+    image = image / 255.0
+    return image
+
+# Función para hacer predicciones
+def predict_image(image):
+    image = preprocess_image(image)
+    image = tf.expand_dims(image, 0)  # Crear un batch de 1 imagen
+    predictions = model.predict(image)
+    predicted_class = np.argmax(predictions[0])
+    confidence = np.max(tf.nn.softmax(predictions[0]))
+    return class_names[predicted_class], confidence
+
+# Ejemplo de uso con imágenes del conjunto de prueba
+(_, _), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+
+# Seleccionar algunas imágenes aleatorias para predecir
+num_images = 5
+random_indices = np.random.randint(0, len(test_images), num_images)
+
+plt.figure(figsize=(15, 3))
+for i, index in enumerate(random_indices):
+    image = test_images[index]
+    true_label = class_names[test_labels[index][0]]
+    predicted_class, confidence = predict_image(image)
+    
+    plt.subplot(1, num_images, i + 1)
+    plt.imshow(image)
+    plt.title(f"Real: {true_label}\nPredicho: {predicted_class}\nConfianza: {confidence:.2f}")
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+print("Para usar con tus propias imágenes, reemplaza 'image' en predict_image(image) con tu imagen cargada.")
