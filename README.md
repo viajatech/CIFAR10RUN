@@ -1,4 +1,5 @@
 ![](https://github.com/viajatech/CIFAR10RUN/blob/main/Figure_1.png)
+![](https://github.com/viajatech/CIFAR10RUN/blob/main/esquema%20CNN.png)
 
 Este código hace lo siguiente:
 Carga el modelo entrenado.
